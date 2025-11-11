@@ -9,7 +9,7 @@ Futuristická aplikace pro objednávání drinků z blenderu s admin stránkou p
 - 📝 Jednoduchý objednávkový formulář
 - 📧 **Email notifikace** - objednávky se automaticky posílají na email
 - 👨‍💼 Waiter dashboard pro správu objednávek
-- 💾 Ukládání objednávek do Vercel KV (nebo in-memory storage)
+- 💾 In-memory storage pro objednávky
 - 🎨 Moderní minimalistický design s futuristickými akcenty
 
 ## Technologie
@@ -17,7 +17,7 @@ Futuristická aplikace pro objednávání drinků z blenderu s admin stránkou p
 - Next.js 14+ (App Router)
 - TypeScript
 - Tailwind CSS
-- Vercel KV pro ukládání dat (nebo in-memory storage pro lokální vývoj)
+- In-memory storage pro ukládání dat
 
 ## Instalace
 
@@ -49,26 +49,12 @@ npm install
    - Aplikace bude pouze logovat do konzole (simulované emaily)
    - Objednávky se budou vytvářet, ale notifikace nebudou odesílány
 
-3. (Volitelné) Pro waiter dashboard s trvalým ukládáním:
-   - Vytvořte KV databázi na [Vercel Dashboard](https://vercel.com/dashboard)
-   - V KV databázi najdete sekci **.env.local** - zkopírujte hodnoty
-   - Přidejte do `.env.local`:
-     ```
-     KV_REST_API_URL=https://...
-     KV_REST_API_TOKEN=...
-     ```
-   
-   **Bez KV databáze:**
-   - Aplikace použije in-memory storage
-   - Data se ztratí po restartu serveru
-   - ⚠️ NENÍ vhodné pro produkci!
-
-4. Spusťte vývojový server:
+3. Spusťte vývojový server:
 ```bash
 npm run dev
 ```
 
-5. Otevřete [http://localhost:3000](http://localhost:3000) v prohlížeči
+4. Otevřete [http://localhost:3000](http://localhost:3000) v prohlížeči
 
 ## Struktura
 
@@ -84,27 +70,25 @@ npm run dev
 ### Rychlý přehled:
 
 1. **Vytvořte Vercel projekt** (Git integration nebo `npx vercel`)
-2. **Vytvořte KV databázi** v Storage sekci
-3. **Získejte Resend API klíč**:
+2. **Získejte Resend API klíč**:
    - Zaregistrujte se na [Resend.com](https://resend.com) (zdarma)
    - Přihlaste se do [Resend Dashboard](https://resend.com/api-keys)
    - Klikněte na **Create API Key**
    - Zadejte název (např. "Office Blender Production")
    - Vyberte oprávnění (minimálně `Sending access`)
    - Zkopírujte API klíč (zobrazí se pouze jednou!)
-4. **Přidejte environment variables** v Vercel Dashboard → Settings → Environment Variables:
-   - `KV_REST_API_URL` a `KV_REST_API_TOKEN` (z KV databáze)
+3. **Přidejte environment variables** v Vercel Dashboard → Settings → Environment Variables:
    - `RESEND_API_KEY` (váš API klíč z Resend)
    - `RESEND_FROM_EMAIL` (volitelně, výchozí: `onboarding@resend.dev`)
    - `ORDER_EMAIL` nebo `ORDER_EMAILS` (email kam se mají posílat notifikace o objednávkách, může být více emailů oddělených čárkou)
-5. **Deploy** - automaticky přes Git nebo `npx vercel --prod`
+4. **Deploy** - automaticky přes Git nebo `npx vercel --prod`
 
 ### Poznámky
 
 - **Email notifikace**: Objednávky se automaticky posílají na email pomocí Resend API
-- **Waiter dashboard**: Funguje s KV databází nebo in-memory storage (data se ztratí po restartu)
+- **Waiter dashboard**: Funguje s in-memory storage (data se ztratí po restartu serverless funkce)
 - **Resend free tier**: 3,000 emails/měsíc zdarma
-- **Vercel KV free tier**: 30,000 reads/day a 30,000 writes/day zdarma
+- **Data persistence**: Data jsou uložena pouze v paměti a ztratí se po restartu
 
 ## Dostupné drinky
 

@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   // Disable static optimization for API routes to avoid webpack chunk issues
   experimental: {
-    serverComponentsExternalPackages: ['@vercel/kv', 'resend'],
+    serverComponentsExternalPackages: ['resend'],
   },
 }
 
