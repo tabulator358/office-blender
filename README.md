@@ -1,4 +1,4 @@
-# Blender Drink Ordering App
+# Office Blender
 
 Futuristická aplikace pro objednávání drinků z blenderu s admin stránkou pro obsluhu.
 
@@ -48,32 +48,14 @@ npm run dev
 
 ## Nasazení na Vercel
 
-### Krok 1: Vytvořte KV databázi
+📖 **Podrobný návod najdete v [VERCEL_SETUP.md](./VERCEL_SETUP.md)**
 
-1. Jděte na [Vercel Dashboard](https://vercel.com/dashboard)
-2. Vyberte svůj projekt (nebo vytvořte nový)
-3. Jděte do sekce **Storage**
-4. Klikněte na **Create Database** → vyberte **KV**
-5. Vytvořte novou KV databázi
+### Rychlý přehled:
 
-### Krok 2: Přidejte environment variables
-
-1. V projektu na Vercel Dashboard jděte do **Settings** → **Environment Variables**
-2. Přidejte tyto proměnné:
-   - `KV_REST_API_URL` - najdete v KV databázi v sekci `.env.local`
-   - `KV_REST_API_TOKEN` - najdete v KV databázi v sekci `.env.local`
-
-### Krok 3: Deploy
-
-```bash
-# Přihlaste se do Vercel
-npx vercel login
-
-# Deploy projektu
-npx vercel
-
-# Nebo použijte Git integration - push do GitHub a Vercel automaticky deployne
-```
+1. **Vytvořte Vercel projekt** (Git integration nebo `npx vercel`)
+2. **Vytvořte KV databázi** v Storage sekci
+3. **Přidejte environment variables** (`KV_REST_API_URL`, `KV_REST_API_TOKEN`)
+4. **Deploy** - automaticky přes Git nebo `npx vercel --prod`
 
 ### Poznámka
 

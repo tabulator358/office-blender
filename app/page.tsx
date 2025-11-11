@@ -70,7 +70,7 @@ export default function Home() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent">
-            Blender Drink Service
+            Office Blender
           </h1>
           <p className="text-xl text-gray-300 mb-6">
             Revoluční způsob, jak si objednat zdravé a chutné drinky přímo do vaší kanceláře
