@@ -27,6 +27,11 @@ module.exports = {
           text: '#2d3436',
           textLight: '#636e72',
         },
+        neon: {
+          cyan: '#00f5ff',
+          purple: '#a855f7',
+          pink: '#ec4899',
+        },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
