@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readOrders, writeOrder } from '@/lib/storage';
+import { sendOrderEmail, sendOrderEmailToMultiple } from '@/lib/email';
 import { Order, DRINKS, DELIVERY_TIMES } from '@/lib/types';
 import { randomUUID } from 'crypto';
 
@@ -62,7 +63,33 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    // Write to storage
+    // Send email notification (non-blocking)
+    const orderEmails = process.env.ORDER_EMAILS || process.env.ORDER_EMAIL;
+    if (orderEmails) {
+      const emails = orderEmails.split(',').map((e: string) => e.trim()).filter(Boolean);
+      if (emails.length > 0) {
+        console.log(`📧 Sending order email to: ${emails.join(', ')}`);
+        // Send email asynchronously (don't wait for it)
+        sendOrderEmailToMultiple(order, emails)
+          .then((success) => {
+            if (success) {
+              console.log(`✓ Order email sent successfully for order ${order.id}`);
+            } else {
+              console.warn(`⚠ Order email failed to send for order ${order.id} - check RESEND_API_KEY`);
+            }
+          })
+          .catch((error) => {
+            console.error('❌ Failed to send order email:', error);
+            // Don't fail the request if email fails
+          });
+      } else {
+        console.warn('⚠ ORDER_EMAIL/ORDER_EMAILS is set but no valid email addresses found');
+      }
+    } else {
+      console.warn('⚠ ORDER_EMAIL/ORDER_EMAILS not set - emails will not be sent. Set ORDER_EMAIL or ORDER_EMAILS environment variable to enable email notifications.');
+    }
+
+    // Write to storage (for waiter dashboard)
     await writeOrder(order);
 
     return NextResponse.json({ order }, { status: 201 });

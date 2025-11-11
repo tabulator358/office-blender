@@ -17,7 +17,8 @@ function getKV() {
 
   try {
     if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-      // Dynamic import to avoid issues if @vercel/kv is not installed
+      // Use dynamic require to avoid build-time issues
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { createClient } = require('@vercel/kv');
       kv = createClient({
         url: process.env.KV_REST_API_URL,
@@ -41,7 +42,7 @@ export async function readOrders(): Promise<Order[]> {
     const kvClient = getKV();
     if (kvClient) {
       // Use Vercel KV
-      const orders = await kvClient.get<Order[]>(ORDERS_KEY);
+      const orders = await kvClient.get(ORDERS_KEY) as Order[] | null;
       return orders || [];
     } else {
       // Use in-memory storage
@@ -59,12 +60,24 @@ export async function writeOrder(order: Order): Promise<void> {
     const kvClient = getKV();
     if (kvClient) {
       // Use Vercel KV
-      const orders = await kvClient.get<Order[]>(ORDERS_KEY) || [];
+      const orders = (await kvClient.get(ORDERS_KEY) as Order[] | null) || [];
+      // Check if order with same ID already exists (shouldn't happen, but safety check)
+      const existingIndex = orders.findIndex((o: Order) => o.id === order.id);
+      if (existingIndex >= 0) {
+        console.warn(`Order with ID ${order.id} already exists, skipping duplicate`);
+        return;
+      }
       orders.push(order);
       await kvClient.set(ORDERS_KEY, orders);
+      console.log(`✓ Order ${order.id} saved to Vercel KV`);
     } else {
       // Use in-memory storage
+      if (memoryStorage.has(order.id)) {
+        console.warn(`Order with ID ${order.id} already exists, skipping duplicate`);
+        return;
+      }
       memoryStorage.set(order.id, order);
+      console.log(`✓ Order ${order.id} saved to in-memory storage`);
     }
   } catch (error) {
     console.error('Error writing order:', error);
@@ -78,20 +91,24 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
     const kvClient = getKV();
     if (kvClient) {
       // Use Vercel KV
-      const orders = await kvClient.get<Order[]>(ORDERS_KEY) || [];
+      const orders = (await kvClient.get(ORDERS_KEY) as Order[] | null) || [];
       const orderIndex = orders.findIndex((order: Order) => order.id === id);
       
       if (orderIndex === -1) {
+        console.warn(`Order with ID ${id} not found`);
         return false;
       }
       
-      orders[orderIndex].status = status;
-      await kvClient.set(ORDERS_KEY, orders);
+      // Create a new array to avoid mutation issues
+      const updatedOrders = [...orders];
+      updatedOrders[orderIndex] = { ...updatedOrders[orderIndex], status };
+      await kvClient.set(ORDERS_KEY, updatedOrders);
       return true;
     } else {
       // Use in-memory storage
       const order = memoryStorage.get(id);
       if (!order) {
+        console.warn(`Order with ID ${id} not found`);
         return false;
       }
       order.status = status;

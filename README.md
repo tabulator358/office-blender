@@ -7,6 +7,7 @@ Futuristická aplikace pro objednávání drinků z blenderu s admin stránkou p
 - 🥤 Výběr z 5 různých drinků
 - ⏰ Výběr času doručení
 - 📝 Jednoduchý objednávkový formulář
+- 📧 **Email notifikace** - objednávky se automaticky posílají na email
 - 👨‍💼 Waiter dashboard pro správu objednávek
 - 💾 Ukládání objednávek do Vercel KV (nebo in-memory storage)
 - 🎨 Moderní minimalistický design s futuristickými akcenty
@@ -25,19 +26,49 @@ Futuristická aplikace pro objednávání drinků z blenderu s admin stránkou p
 npm install
 ```
 
-2. (Volitelné) Pro lokální vývoj s Vercel KV:
-   - Vytvořte KV databázi na [Vercel Dashboard](https://vercel.com/dashboard)
-   - Zkopírujte `.env.example` do `.env.local`
-   - Přidejte `KV_REST_API_URL` a `KV_REST_API_TOKEN` do `.env.local`
+2. (Volitelné) Nastavte email notifikace s Resend:
+   - Zaregistrujte se na [Resend.com](https://resend.com) (zdarma)
+   - Přihlaste se do [Resend Dashboard](https://resend.com/api-keys)
+   - Klikněte na **Create API Key**
+   - Zadejte název (např. "Office Blender Local")
+   - Vyberte oprávnění (minimálně `Sending access`)
+   - Zkopírujte API klíč (zobrazí se pouze jednou!)
+   - Vytvořte soubor `.env.local` v kořenovém adresáři
+   - Přidejte do `.env.local`:
+     ```
+     RESEND_API_KEY=re_xxxxxxxxxxxxx
+     RESEND_FROM_EMAIL=onboarding@resend.dev
+     ORDER_EMAIL=vas-email@example.com
+     ```
+     - `RESEND_API_KEY` - váš API klíč z Resend
+     - `RESEND_FROM_EMAIL` - email odesílatele (výchozí: `onboarding@resend.dev`)
+     - `ORDER_EMAIL` - email kam se mají posílat notifikace o objednávkách (můžete použít více emailů oddělených čárkou: `email1@example.com,email2@example.com`)
    
-   Bez těchto proměnných se použije in-memory storage (data se ztratí po restartu).
+   **Bez Resend API klíče:**
+   - Email notifikace se nebudou posílat
+   - Aplikace bude pouze logovat do konzole (simulované emaily)
+   - Objednávky se budou vytvářet, ale notifikace nebudou odesílány
 
-3. Spusťte vývojový server:
+3. (Volitelné) Pro waiter dashboard s trvalým ukládáním:
+   - Vytvořte KV databázi na [Vercel Dashboard](https://vercel.com/dashboard)
+   - V KV databázi najdete sekci **.env.local** - zkopírujte hodnoty
+   - Přidejte do `.env.local`:
+     ```
+     KV_REST_API_URL=https://...
+     KV_REST_API_TOKEN=...
+     ```
+   
+   **Bez KV databáze:**
+   - Aplikace použije in-memory storage
+   - Data se ztratí po restartu serveru
+   - ⚠️ NENÍ vhodné pro produkci!
+
+4. Spusťte vývojový server:
 ```bash
 npm run dev
 ```
 
-4. Otevřete [http://localhost:3000](http://localhost:3000) v prohlížeči
+5. Otevřete [http://localhost:3000](http://localhost:3000) v prohlížeči
 
 ## Struktura
 
@@ -54,14 +85,26 @@ npm run dev
 
 1. **Vytvořte Vercel projekt** (Git integration nebo `npx vercel`)
 2. **Vytvořte KV databázi** v Storage sekci
-3. **Přidejte environment variables** (`KV_REST_API_URL`, `KV_REST_API_TOKEN`)
-4. **Deploy** - automaticky přes Git nebo `npx vercel --prod`
+3. **Získejte Resend API klíč**:
+   - Zaregistrujte se na [Resend.com](https://resend.com) (zdarma)
+   - Přihlaste se do [Resend Dashboard](https://resend.com/api-keys)
+   - Klikněte na **Create API Key**
+   - Zadejte název (např. "Office Blender Production")
+   - Vyberte oprávnění (minimálně `Sending access`)
+   - Zkopírujte API klíč (zobrazí se pouze jednou!)
+4. **Přidejte environment variables** v Vercel Dashboard → Settings → Environment Variables:
+   - `KV_REST_API_URL` a `KV_REST_API_TOKEN` (z KV databáze)
+   - `RESEND_API_KEY` (váš API klíč z Resend)
+   - `RESEND_FROM_EMAIL` (volitelně, výchozí: `onboarding@resend.dev`)
+   - `ORDER_EMAIL` nebo `ORDER_EMAILS` (email kam se mají posílat notifikace o objednávkách, může být více emailů oddělených čárkou)
+5. **Deploy** - automaticky přes Git nebo `npx vercel --prod`
 
-### Poznámka
+### Poznámky
 
-- Aplikace automaticky použije Vercel KV, pokud jsou nastaveny environment variables
-- Bez environment variables se použije in-memory storage (vhodné pouze pro testování)
-- Vercel KV má zdarma generous free tier (30,000 reads/day, 30,000 writes/day)
+- **Email notifikace**: Objednávky se automaticky posílají na email pomocí Resend API
+- **Waiter dashboard**: Funguje s KV databází nebo in-memory storage (data se ztratí po restartu)
+- **Resend free tier**: 3,000 emails/měsíc zdarma
+- **Vercel KV free tier**: 30,000 reads/day a 30,000 writes/day zdarma
 
 ## Dostupné drinky
 
@@ -73,5 +116,5 @@ npm run dev
 
 ## Časy doručení
 
-10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00, 17:00
+9:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00, 17:00
 
