@@ -8,16 +8,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        neon: {
-          cyan: '#00f5ff',
-          pink: '#ff00ff',
-          purple: '#a855f7',
-          blue: '#3b82f6',
+        food: {
+          orange: '#ff6b35',
+          orangeLight: '#ff8c5a',
+          green: '#4ecdc4',
+          greenLight: '#6eddd5',
+          yellow: '#ffd93d',
+          yellowLight: '#ffe570',
+          pink: '#ff6b9d',
+          pinkLight: '#ff8bb5',
+          berry: '#c44569',
+          berryLight: '#d86589',
         },
-        dark: {
-          bg: '#0a0a0f',
-          card: '#1a1a2e',
-          hover: '#2a2a3e',
+        warm: {
+          bg: '#fff8f0',
+          card: '#ffffff',
+          hover: '#fff5e6',
+          text: '#2d3436',
+          textLight: '#636e72',
         },
       },
       backgroundImage: {
@@ -30,12 +38,19 @@ module.exports = {
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
+        'bounce-slow': 'bounce 2s infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'wiggle': 'wiggle 1s ease-in-out infinite',
+        'spin-slow': 'spin 3s linear infinite',
       },
       keyframes: {
-        glow: {
-          '0%': { boxShadow: '0 0 5px rgba(0, 245, 255, 0.5)' },
-          '100%': { boxShadow: '0 0 20px rgba(0, 245, 255, 0.8), 0 0 30px rgba(0, 245, 255, 0.6)' },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
         },
       },
     },

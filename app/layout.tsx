@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Office Blender',
-  description: 'Order your favorite healthy drinks from our futuristic office blender service',
+  title: 'Office Blender 🍹',
+  description: 'Objednejte si čerstvé a chutné drinky přímo do vaší kanceláře! Zdravé smoothie a bulletproof káva plné energie.',
 };
 
 export default function RootLayout({
